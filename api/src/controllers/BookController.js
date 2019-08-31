@@ -29,7 +29,7 @@ class BookController {
     const { theBook } = req;
     const alteredBook = req.body;
     try {
-      await Book.update(alteredBook, { where: { id: theBook.id } });
+      await theBook.update(alteredBook);
       const updatedBook = await Book.findOne({ where: { id: theBook.id } });
       responseBuilder.setSuccess(200, 'Book updated', updatedBook);
     } catch (error) {

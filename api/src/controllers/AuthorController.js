@@ -29,7 +29,7 @@ class AuthorController {
     const { theAuthor } = req;
     const alteredAuthor = req.body;
     try {
-      await Author.update(alteredAuthor, { where: { id: theAuthor.id } });
+      await theAuthor.update(alteredAuthor);
       const updatedAuthor = await Author.findOne({ where: { id: theAuthor.id } });
       responseBuilder.setSuccess(200, 'Author updated', updatedAuthor);
     } catch (error) {

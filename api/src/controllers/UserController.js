@@ -29,7 +29,7 @@ class UserController {
     const { theUser } = req;
     const alteredUser = req.body;
     try {
-      await User.update(alteredUser, { where: { id: theUser.id } });
+      await theUser.update(alteredUser);
       const updatedUser = await User.findOne({ where: { id: theUser.id } });
       responseBuilder.setSuccess(200, 'User updated', updatedUser);
     } catch (error) {

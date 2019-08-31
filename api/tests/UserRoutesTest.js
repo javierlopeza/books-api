@@ -117,23 +117,22 @@ describe('Testing user endpoints:', () => {
       });
   });
 
-  it('It should update a user', (done) => {
+  it('It should update a user', async () => {
     const userId = 1;
     const updatedUser = {
       email: 'peter@parker.com',
       password: 'spider',
     };
-    chai
+    const res = await chai
       .request(app)
       .patch(`/api/v1/users/${userId}`)
       .set('Accept', 'application/json')
-      .send(updatedUser)
-      .end((err, res) => {
-        expect(res.status).to.equal(200);
-        expect(res.body.data.id).equal(userId);
-        expect(res.body.data.email).equal(updatedUser.email);
-        done();
-      });
+      .send(updatedUser);
+    expect(res.status).to.equal(200);
+    expect(res.body.data.id).equal(userId);
+    expect(res.body.data.email).equal(updatedUser.email);
+    const same = await bcrypt.compare(updatedUser.password, res.body.data.password);
+    expect(same).equal(true);
   });
 
   it('It should not update a user with invalid email', (done) => {
