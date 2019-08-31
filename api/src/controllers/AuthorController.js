@@ -15,10 +15,6 @@ class AuthorController {
   }
 
   static async create(req, res) {
-    if (!req.body.name) {
-      responseBuilder.setError(400, 'Please provide complete details');
-      return responseBuilder.send(res);
-    }
     const newAuthor = req.body;
     try {
       const createdAuthor = await Author.create(newAuthor);

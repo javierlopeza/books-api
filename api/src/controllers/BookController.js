@@ -15,10 +15,6 @@ class BookController {
   }
 
   static async create(req, res) {
-    if (!req.body.title) {
-      responseBuilder.setError(400, 'Please provide complete details');
-      return responseBuilder.send(res);
-    }
     const newBook = req.body;
     try {
       const createdBook = await Book.create(newBook);
