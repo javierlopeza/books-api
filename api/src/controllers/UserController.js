@@ -33,7 +33,7 @@ class UserController {
       const updatedUser = await User.findOne({ where: { id: theUser.id } });
       responseBuilder.setSuccess(200, 'User updated', updatedUser);
     } catch (error) {
-      responseBuilder.setError(404, error);
+      responseBuilder.setError(400, error);
     }
     return responseBuilder.send(res);
   }

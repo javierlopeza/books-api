@@ -33,7 +33,7 @@ class BookController {
       const updatedBook = await Book.findOne({ where: { id: theBook.id } });
       responseBuilder.setSuccess(200, 'Book updated', updatedBook);
     } catch (error) {
-      responseBuilder.setError(404, error);
+      responseBuilder.setError(400, error);
     }
     return responseBuilder.send(res);
   }

@@ -2,11 +2,16 @@ import chai from 'chai';
 import chaiHttp from 'chai-http';
 import 'chai/register-should';
 import app from '../index';
+import { Author } from '../src/models';
 
 chai.use(chaiHttp);
 const { expect } = chai;
 
 describe('Testing author endpoints:', () => {
+  before(async () => {
+    await Author.create({ name: 'Bruce Banner' });
+  });
+
   it('It should create an author', (done) => {
     const author = {
       name: 'Tony Stark',
@@ -18,7 +23,7 @@ describe('Testing author endpoints:', () => {
       .send(author)
       .end((err, res) => {
         expect(res.status).to.equal(201);
-        expect(res.body.data.id).equal(1);
+        res.body.data.should.have.property('id');
         expect(res.body.data.name).equal(author.name);
         done();
       });
@@ -109,7 +114,7 @@ describe('Testing author endpoints:', () => {
   });
 
   it('It should not update an author with invalid id', (done) => {
-    const authorId = '9999';
+    const authorId = 9999;
     const updatedAuthor = {
       name: 'Peter Parker',
     };

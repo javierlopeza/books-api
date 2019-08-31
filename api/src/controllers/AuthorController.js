@@ -33,7 +33,7 @@ class AuthorController {
       const updatedAuthor = await Author.findOne({ where: { id: theAuthor.id } });
       responseBuilder.setSuccess(200, 'Author updated', updatedAuthor);
     } catch (error) {
-      responseBuilder.setError(404, error);
+      responseBuilder.setError(400, error);
     }
     return responseBuilder.send(res);
   }

@@ -9,7 +9,8 @@ const { expect } = chai;
 
 describe('Testing book endpoints:', () => {
   before(async () => {
-    await Author.create({ name: 'Howard Stark' });
+    const author = await Author.create({ name: 'Howard Stark' });
+    await Book.create({ title: 'How to be Iron Man', authorId: author.id });
   });
 
   it('It should create a book', async () => {
@@ -28,7 +29,7 @@ describe('Testing book endpoints:', () => {
       .send(book)
       .end((err, res) => {
         expect(res.status).to.equal(201);
-        expect(res.body.data.id).equal(1);
+        res.body.data.should.have.property('id');
         expect(res.body.data.title).equal(book.title);
         expect(res.body.data.description).equal(book.description);
         expect(res.body.data.datePublished).equal(book.datePublished);
@@ -135,7 +136,7 @@ describe('Testing book endpoints:', () => {
   });
 
   it('It should not update a book with invalid id', (done) => {
-    const bookId = '9999';
+    const bookId = 9999;
     const updatedBook = {
       title: 'The Hobbit',
     };
