@@ -6,9 +6,15 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         type: DataTypes.INTEGER,
       },
-      datePublished: DataTypes.DATE,
-      description: DataTypes.TEXT,
-      imageUrl: DataTypes.STRING,
+      datePublished: {
+        type: DataTypes.DATE,
+      },
+      description: {
+        type: DataTypes.TEXT,
+      },
+      imageUrl: {
+        type: DataTypes.STRING,
+      },
       title: {
         allowNull: false,
         type: DataTypes.STRING,

@@ -2,7 +2,11 @@ module.exports = (sequelize, DataTypes) => {
   const Author = sequelize.define(
     'Author',
     {
-      name: DataTypes.STRING,
+      name: {
+        allowNull: false,
+        type: DataTypes.STRING,
+        unique: true,
+      },
     },
     {},
   );
