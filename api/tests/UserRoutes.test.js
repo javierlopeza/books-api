@@ -83,6 +83,18 @@ describe('Testing user endpoints:', function () {
       });
   });
 
+  it('It should not get all users if not logged in', (done) => {
+    chai
+      .request(app)
+      .get('/api/v1/users')
+      .set('Accept', 'application/json')
+      .end((err, res) => {
+        expect(res).to.have.status(401);
+        expect(res.body).to.include.property('message').that.is.a('string').not.empty;
+        done();
+      });
+  });
+
   it('It should get a particular user', (done) => {
     const userId = 1;
     chai
