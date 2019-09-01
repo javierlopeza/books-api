@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import UserController from '../controllers/UserController';
 import ResponseBuilder from '../utils/controllers/ResponseBuilder';
-import { isLoggedIn } from '../utils/routes/Permissions';
+import { isLoggedIn, isSelf } from '../utils/routes/Permissions';
 import { User } from '../models';
 
 const router = Router();
@@ -29,7 +29,7 @@ router.param('id', async (req, res, next, id) => {
 
 router.get('/', isLoggedIn, UserController.index);
 router.post('/', UserController.create);
-router.get('/:id', UserController.show);
+router.get('/:id', isSelf, UserController.show);
 router.patch('/:id', UserController.update);
 router.delete('/:id', UserController.destroy);
 

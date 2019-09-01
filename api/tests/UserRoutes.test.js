@@ -10,12 +10,17 @@ const { expect } = chai;
 
 describe('Testing user endpoints:', function () {
   before(async () => {
-    this.agent = chai.request.agent(app);
     const user = {
       email: 'bruce@banner.com',
       password: 'thehulk',
     };
-    await User.create(user);
+    const otherUser = {
+      email: 'steve@rogers.com',
+      password: 'america',
+    };
+    this.currentUser = await User.create(user);
+    this.otherUser = await User.create(otherUser);
+    this.agent = chai.request.agent(app);
     await this.agent
       .post('/api/v1/session')
       .set('Accept', 'application/json')
@@ -96,9 +101,8 @@ describe('Testing user endpoints:', function () {
   });
 
   it('It should get a particular user', (done) => {
-    const userId = 1;
-    chai
-      .request(app)
+    const userId = this.currentUser.id;
+    this.agent
       .get(`/api/v1/users/${userId}`)
       .set('Accept', 'application/json')
       .end((err, res) => {
@@ -106,6 +110,23 @@ describe('Testing user endpoints:', function () {
         expect(res.body.data).to.include.all.keys(['id', 'email', 'password']);
         done();
       });
+  });
+
+  it('It should not get a particular user if not logged in', async () => {
+    const res = await chai
+      .request(app)
+      .get(`/api/v1/users/${this.otherUser.id}`)
+      .set('Accept', 'application/json');
+    expect(res).to.have.status(401);
+    expect(res.body).to.include.property('message').that.is.a('string').not.empty;
+  });
+
+  it('It should not get a particular user if logged user is not that one', async () => {
+    const res = await this.agent
+      .get(`/api/v1/users/${this.otherUser.id}`)
+      .set('Accept', 'application/json');
+    expect(res).to.have.status(403);
+    expect(res.body).to.include.property('message').that.is.a('string').not.empty;
   });
 
   it('It should not get a particular user with invalid id', (done) => {
