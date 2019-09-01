@@ -112,6 +112,23 @@ describe('Testing author endpoints:', () => {
       });
   });
 
+  it('It should not update an author with empty name', (done) => {
+    const authorId = 1;
+    const updatedAuthor = {
+      name: '',
+    };
+    chai
+      .request(app)
+      .patch(`/api/v1/authors/${authorId}`)
+      .set('Accept', 'application/json')
+      .send(updatedAuthor)
+      .end((err, res) => {
+        expect(res).to.have.status(400);
+        expect(res.body).to.include.property('message').that.is.a('object').not.empty;
+        done();
+      });
+  });
+
   it('It should not update an author with invalid id', (done) => {
     const authorId = 9999;
     const updatedAuthor = {

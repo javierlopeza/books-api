@@ -5,12 +5,8 @@ const responseBuilder = new ResponseBuilder();
 
 class AuthorController {
   static async index(req, res) {
-    try {
-      const allAuthors = await Author.findAll();
-      responseBuilder.setSuccess(200, 'Authors retrieved', allAuthors);
-    } catch (error) {
-      responseBuilder.setError(400, error);
-    }
+    const allAuthors = await Author.findAll();
+    responseBuilder.setSuccess(200, 'Authors retrieved', allAuthors);
     return responseBuilder.send(res);
   }
 
@@ -46,14 +42,8 @@ class AuthorController {
 
   static async destroy(req, res) {
     const { theAuthor } = req;
-
-    try {
-      await Author.destroy({ where: { id: theAuthor.id } });
-      responseBuilder.setSuccess(200, 'Author deleted');
-    } catch (error) {
-      responseBuilder.setError(400, error);
-    }
-
+    await theAuthor.destroy();
+    responseBuilder.setSuccess(200, 'Author deleted');
     return responseBuilder.send(res);
   }
 }
