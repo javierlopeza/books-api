@@ -23,11 +23,11 @@ describe('Testing user endpoints:', () => {
       .post('/api/v1/users')
       .set('Accept', 'application/json')
       .send(user);
-    expect(res.status).to.equal(201);
-    res.body.data.should.have.property('id');
-    expect(res.body.data.email).equal(user.email);
+    expect(res).to.have.status(201);
+    expect(res.body.data).to.include.all.keys(['id', 'email', 'password']);
+    expect(res.body.data.email).to.equal(user.email);
     const same = await bcrypt.compare(user.password, res.body.data.password);
-    expect(same).equal(true);
+    expect(same).to.be.true;
   });
 
   it('It should not create a user with invalid email', (done) => {
@@ -41,7 +41,7 @@ describe('Testing user endpoints:', () => {
       .set('Accept', 'application/json')
       .send(user)
       .end((err, res) => {
-        expect(res.status).to.equal(400);
+        expect(res).to.have.status(400);
         done();
       });
   });
@@ -57,7 +57,7 @@ describe('Testing user endpoints:', () => {
       .set('Accept', 'application/json')
       .send(user)
       .end((err, res) => {
-        expect(res.status).to.equal(400);
+        expect(res).to.have.status(400);
         done();
       });
   });
@@ -68,10 +68,9 @@ describe('Testing user endpoints:', () => {
       .get('/api/v1/users')
       .set('Accept', 'application/json')
       .end((err, res) => {
-        expect(res.status).to.equal(200);
-        res.body.data[0].should.have.property('id');
-        res.body.data[0].should.have.property('email');
-        res.body.data[0].should.have.property('password');
+        expect(res).to.have.status(200);
+        expect(res.body.data).to.not.be.empty;
+        expect(res.body.data[0]).to.include.all.keys(['id', 'email', 'password']);
         done();
       });
   });
@@ -83,10 +82,8 @@ describe('Testing user endpoints:', () => {
       .get(`/api/v1/users/${userId}`)
       .set('Accept', 'application/json')
       .end((err, res) => {
-        expect(res.status).to.equal(200);
-        res.body.data.should.have.property('id');
-        res.body.data.should.have.property('email');
-        res.body.data.should.have.property('password');
+        expect(res).to.have.status(200);
+        expect(res.body.data).to.include.all.keys(['id', 'email', 'password']);
         done();
       });
   });
@@ -98,8 +95,8 @@ describe('Testing user endpoints:', () => {
       .get(`/api/v1/users/${userId}`)
       .set('Accept', 'application/json')
       .end((err, res) => {
-        expect(res.status).to.equal(404);
-        res.body.should.have.property('message');
+        expect(res).to.have.status(404);
+        expect(res.body).to.include.property('message').that.is.a('string').not.empty;
         done();
       });
   });
@@ -111,8 +108,8 @@ describe('Testing user endpoints:', () => {
       .get(`/api/v1/users/${userId}`)
       .set('Accept', 'application/json')
       .end((err, res) => {
-        expect(res.status).to.equal(400);
-        res.body.should.have.property('message');
+        expect(res).to.have.status(400);
+        expect(res.body).to.include.property('message').that.is.a('string').not.empty;
         done();
       });
   });
@@ -128,11 +125,11 @@ describe('Testing user endpoints:', () => {
       .patch(`/api/v1/users/${userId}`)
       .set('Accept', 'application/json')
       .send(updatedUser);
-    expect(res.status).to.equal(200);
-    expect(res.body.data.id).equal(userId);
-    expect(res.body.data.email).equal(updatedUser.email);
+    expect(res).to.have.status(200);
+    expect(res.body.data.id).to.equal(userId);
+    expect(res.body.data.email).to.equal(updatedUser.email);
     const same = await bcrypt.compare(updatedUser.password, res.body.data.password);
-    expect(same).equal(true);
+    expect(same).to.be.true;
   });
 
   it('It should not update a user with invalid email', (done) => {
@@ -147,8 +144,8 @@ describe('Testing user endpoints:', () => {
       .set('Accept', 'application/json')
       .send(updatedUser)
       .end((err, res) => {
-        expect(res.status).to.equal(400);
-        res.body.should.have.property('message');
+        expect(res).to.have.status(400);
+        expect(res.body).to.include.property('message').that.is.a('object').not.empty;
         done();
       });
   });
@@ -165,8 +162,8 @@ describe('Testing user endpoints:', () => {
       .set('Accept', 'application/json')
       .send(updatedUser)
       .end((err, res) => {
-        expect(res.status).to.equal(400);
-        res.body.should.have.property('message');
+        expect(res).to.have.status(400);
+        expect(res.body).to.include.property('message').that.is.a('object').not.empty;
         done();
       });
   });
@@ -183,8 +180,8 @@ describe('Testing user endpoints:', () => {
       .set('Accept', 'application/json')
       .send(updatedUser)
       .end((err, res) => {
-        expect(res.status).to.equal(404);
-        res.body.should.have.property('message');
+        expect(res).to.have.status(404);
+        expect(res.body).to.include.property('message').that.is.a('string').not.empty;
         done();
       });
   });
@@ -200,23 +197,21 @@ describe('Testing user endpoints:', () => {
       .set('Accept', 'application/json')
       .send(updatedUser)
       .end((err, res) => {
-        expect(res.status).to.equal(400);
-        res.body.should.have.property('message');
+        expect(res).to.have.status(400);
+        expect(res.body).to.include.property('message').that.is.a('string').not.empty;
         done();
       });
   });
 
-  it('It should delete an user', (done) => {
+  it('It should delete an user', async () => {
     const userId = 1;
-    chai
+    const res = await chai
       .request(app)
       .delete(`/api/v1/users/${userId}`)
-      .set('Accept', 'application/json')
-      .end((err, res) => {
-        expect(res.status).to.equal(200);
-        expect(res.body.data).to.include({});
-        done();
-      });
+      .set('Accept', 'application/json');
+    expect(res).to.have.status(200);
+    const user = await User.findByPk(userId);
+    expect(user).to.be.null;
   });
 
   it('It should not delete an user with invalid id', (done) => {
@@ -226,8 +221,8 @@ describe('Testing user endpoints:', () => {
       .delete(`/api/v1/users/${userId}`)
       .set('Accept', 'application/json')
       .end((err, res) => {
-        expect(res.status).to.equal(404);
-        res.body.should.have.property('message');
+        expect(res).to.have.status(404);
+        expect(res.body).to.include.property('message').that.is.a('string').not.empty;
         done();
       });
   });
@@ -239,8 +234,8 @@ describe('Testing user endpoints:', () => {
       .delete(`/api/v1/users/${userId}`)
       .set('Accept', 'application/json')
       .end((err, res) => {
-        expect(res.status).to.equal(400);
-        res.body.should.have.property('message');
+        expect(res).to.have.status(400);
+        expect(res.body).to.include.property('message').that.is.a('string').not.empty;
         done();
       });
   });

@@ -22,9 +22,9 @@ describe('Testing author endpoints:', () => {
       .set('Accept', 'application/json')
       .send(author)
       .end((err, res) => {
-        expect(res.status).to.equal(201);
-        res.body.data.should.have.property('id');
-        expect(res.body.data.name).equal(author.name);
+        expect(res).to.have.status(201);
+        expect(res.body.data).to.include.all.keys(['id', 'name']);
+        expect(res.body.data.name).to.equal(author.name);
         done();
       });
   });
@@ -37,7 +37,7 @@ describe('Testing author endpoints:', () => {
       .set('Accept', 'application/json')
       .send(author)
       .end((err, res) => {
-        expect(res.status).to.equal(400);
+        expect(res).to.have.status(400);
         done();
       });
   });
@@ -48,9 +48,9 @@ describe('Testing author endpoints:', () => {
       .get('/api/v1/authors')
       .set('Accept', 'application/json')
       .end((err, res) => {
-        expect(res.status).to.equal(200);
-        res.body.data[0].should.have.property('id');
-        res.body.data[0].should.have.property('name');
+        expect(res).to.have.status(200);
+        expect(res.body.data).to.not.be.empty;
+        expect(res.body.data[0]).to.include.all.keys(['id', 'name']);
         done();
       });
   });
@@ -62,9 +62,8 @@ describe('Testing author endpoints:', () => {
       .get(`/api/v1/authors/${authorId}`)
       .set('Accept', 'application/json')
       .end((err, res) => {
-        expect(res.status).to.equal(200);
-        res.body.data.should.have.property('id');
-        res.body.data.should.have.property('name');
+        expect(res).to.have.status(200);
+        expect(res.body.data).to.include.all.keys(['id', 'name']);
         done();
       });
   });
@@ -76,8 +75,8 @@ describe('Testing author endpoints:', () => {
       .get(`/api/v1/authors/${authorId}`)
       .set('Accept', 'application/json')
       .end((err, res) => {
-        expect(res.status).to.equal(404);
-        res.body.should.have.property('message');
+        expect(res).to.have.status(404);
+        expect(res.body).to.include.property('message').that.is.a('string').not.empty;
         done();
       });
   });
@@ -89,8 +88,8 @@ describe('Testing author endpoints:', () => {
       .get(`/api/v1/authors/${authorId}`)
       .set('Accept', 'application/json')
       .end((err, res) => {
-        expect(res.status).to.equal(400);
-        res.body.should.have.property('message');
+        expect(res).to.have.status(400);
+        expect(res.body).to.include.property('message').that.is.a('string').not.empty;
         done();
       });
   });
@@ -106,9 +105,9 @@ describe('Testing author endpoints:', () => {
       .set('Accept', 'application/json')
       .send(updatedAuthor)
       .end((err, res) => {
-        expect(res.status).to.equal(200);
-        expect(res.body.data.id).equal(authorId);
-        expect(res.body.data.name).equal(updatedAuthor.name);
+        expect(res).to.have.status(200);
+        expect(res.body.data.id).to.equal(authorId);
+        expect(res.body.data.name).to.equal(updatedAuthor.name);
         done();
       });
   });
@@ -124,8 +123,8 @@ describe('Testing author endpoints:', () => {
       .set('Accept', 'application/json')
       .send(updatedAuthor)
       .end((err, res) => {
-        expect(res.status).to.equal(404);
-        res.body.should.have.property('message');
+        expect(res).to.have.status(404);
+        expect(res.body).to.include.property('message').that.is.a('string').not.empty;
         done();
       });
   });
@@ -141,23 +140,21 @@ describe('Testing author endpoints:', () => {
       .set('Accept', 'application/json')
       .send(updatedAuthor)
       .end((err, res) => {
-        expect(res.status).to.equal(400);
-        res.body.should.have.property('message');
+        expect(res).to.have.status(400);
+        expect(res.body).to.include.property('message').that.is.a('string').not.empty;
         done();
       });
   });
 
-  it('It should delete an author', (done) => {
+  it('It should delete an author', async () => {
     const authorId = 1;
-    chai
+    const res = await chai
       .request(app)
       .delete(`/api/v1/authors/${authorId}`)
-      .set('Accept', 'application/json')
-      .end((err, res) => {
-        expect(res.status).to.equal(200);
-        expect(res.body.data).to.include({});
-        done();
-      });
+      .set('Accept', 'application/json');
+    expect(res).to.have.status(200);
+    const author = await Author.findByPk(authorId);
+    expect(author).to.be.null;
   });
 
   it('It should not delete an author with invalid id', (done) => {
@@ -167,8 +164,8 @@ describe('Testing author endpoints:', () => {
       .delete(`/api/v1/authors/${authorId}`)
       .set('Accept', 'application/json')
       .end((err, res) => {
-        expect(res.status).to.equal(404);
-        res.body.should.have.property('message');
+        expect(res).to.have.status(404);
+        expect(res.body).to.include.property('message').that.is.a('string').not.empty;
         done();
       });
   });
@@ -180,8 +177,8 @@ describe('Testing author endpoints:', () => {
       .delete(`/api/v1/authors/${authorId}`)
       .set('Accept', 'application/json')
       .end((err, res) => {
-        expect(res.status).to.equal(400);
-        res.body.should.have.property('message');
+        expect(res).to.have.status(400);
+        expect(res.body).to.include.property('message').that.is.a('string').not.empty;
         done();
       });
   });
