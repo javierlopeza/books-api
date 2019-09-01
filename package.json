@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon --exec babel-node ./api/index.js",
+    "db:reset": "npx sequelize db:drop && npx sequelize db:create && npx sequelize db:migrate && npx sequelize db:seed:all",
     "start": "node ./build/index.js",
     "build": "rm -rf ./build && babel -d ./build ./api -s",
     "heroku-postbuild": "yarn build && sequelize db:migrate",
@@ -37,6 +38,7 @@
     "coveralls": "^3.0.6",
     "dotenv": "^8.1.0",
     "express": "^4.17.1",
+    "faker": "^4.1.0",
     "lodash": "^4.17.15",
     "mocha": "^6.2.0",
     "node-fetch": "^2.6.0",
