@@ -5,12 +5,8 @@ const responseBuilder = new ResponseBuilder();
 
 class BookController {
   static async index(req, res) {
-    try {
-      const allBooks = await Book.findAll();
-      responseBuilder.setSuccess(200, 'Books retrieved', allBooks);
-    } catch (error) {
-      responseBuilder.setError(400, error);
-    }
+    const allBooks = await Book.findAll();
+    responseBuilder.setSuccess(200, 'Books retrieved', allBooks);
     return responseBuilder.send(res);
   }
 
@@ -30,7 +26,7 @@ class BookController {
     const alteredBook = req.body;
     try {
       await theBook.update(alteredBook);
-      const updatedBook = await Book.findOne({ where: { id: theBook.id } });
+      const updatedBook = await Book.findByPk(theBook.id);
       responseBuilder.setSuccess(200, 'Book updated', updatedBook);
     } catch (error) {
       responseBuilder.setError(400, error);
@@ -46,14 +42,8 @@ class BookController {
 
   static async destroy(req, res) {
     const { theBook } = req;
-
-    try {
-      await Book.destroy({ where: { id: theBook.id } });
-      responseBuilder.setSuccess(200, 'Book deleted');
-    } catch (error) {
-      responseBuilder.setError(400, error);
-    }
-
+    await theBook.destroy();
+    responseBuilder.setSuccess(200, 'Book deleted');
     return responseBuilder.send(res);
   }
 }

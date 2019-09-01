@@ -145,6 +145,23 @@ describe('Testing book endpoints:', () => {
     expect(res.body.data.authorId).to.equal(book.authorId);
   });
 
+  it('It should not update a book with empty title', (done) => {
+    const bookId = 1;
+    const updatedBook = {
+      title: '',
+    };
+    chai
+      .request(app)
+      .patch(`/api/v1/books/${bookId}`)
+      .set('Accept', 'application/json')
+      .send(updatedBook)
+      .end((err, res) => {
+        expect(res).to.have.status(400);
+        expect(res.body).to.include.property('message').that.is.a('object').not.empty;
+        done();
+      });
+  });
+
   it('It should not update a book with invalid id', (done) => {
     const bookId = 9999;
     const updatedBook = {

@@ -5,12 +5,8 @@ const responseBuilder = new ResponseBuilder();
 
 class UserController {
   static async index(req, res) {
-    try {
-      const allUsers = await User.findAll();
-      responseBuilder.setSuccess(200, 'Users retrieved', allUsers);
-    } catch (error) {
-      responseBuilder.setError(400, error);
-    }
+    const allUsers = await User.findAll();
+    responseBuilder.setSuccess(200, 'Users retrieved', allUsers);
     return responseBuilder.send(res);
   }
 
@@ -46,14 +42,8 @@ class UserController {
 
   static async destroy(req, res) {
     const { theUser } = req;
-
-    try {
-      await User.destroy({ where: { id: theUser.id } });
-      responseBuilder.setSuccess(200, 'User deleted');
-    } catch (error) {
-      responseBuilder.setError(400, error);
-    }
-
+    await theUser.destroy();
+    responseBuilder.setSuccess(200, 'User deleted');
     return responseBuilder.send(res);
   }
 }

@@ -61,13 +61,19 @@ describe('Testing session endpoints:', () => {
       .post('/api/v1/session')
       .set('Accept', 'application/json')
       .send(user);
+    expect(logInRes).to.have.status(201);
     expect(logInRes).to.have.cookie('express:sess');
     expect(logInRes).to.have.cookie('express:sess.sig');
+    expect(logInRes).to.have.header('set-cookie');
+    expect(logInRes.headers['set-cookie']).to.have.length(2);
+    expect(logInRes.headers['set-cookie'][0]).to.match(/^express:sess=[A-z0-9]{16};/);
+    expect(logInRes.headers['set-cookie'][1]).to.match(/^express:sess.sig=[A-z0-9]+;/);
     const logOutRes = await agent
       .delete('/api/v1/session')
       .set('Accept', 'application/json')
       .send();
-    expect(logOutRes).to.not.have.cookie('express:sess');
+    expect(logOutRes).to.have.status(200);
+    expect(logOutRes).to.have.cookie('express:sess', '');
     agent.close();
   });
 });
