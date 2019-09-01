@@ -8,9 +8,18 @@ import { User } from '../src/models';
 chai.use(chaiHttp);
 const { expect } = chai;
 
-describe('Testing user endpoints:', () => {
+describe('Testing user endpoints:', function () {
   before(async () => {
-    await User.create({ email: 'bruce@banner.com', password: 'thehulk' });
+    this.agent = chai.request.agent(app);
+    const user = {
+      email: 'bruce@banner.com',
+      password: 'thehulk',
+    };
+    await User.create(user);
+    await this.agent
+      .post('/api/v1/session')
+      .set('Accept', 'application/json')
+      .send(user);
   });
 
   it('It should create a user', async () => {
@@ -63,8 +72,7 @@ describe('Testing user endpoints:', () => {
   });
 
   it('It should get all users', (done) => {
-    chai
-      .request(app)
+    this.agent
       .get('/api/v1/users')
       .set('Accept', 'application/json')
       .end((err, res) => {
