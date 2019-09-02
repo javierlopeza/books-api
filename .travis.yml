@@ -7,16 +7,16 @@ cache:
 install:
   - yarn install
 services:
+  - docker
   - postgresql
 
 env:
   global:
-    - NODE_ENV=test
+  - NODE_ENV=test
 
 before_install:
-  - wget https://dl.min.io/server/minio/release/linux-amd64/minio
-  - chmod +x minio
-  - ./minio server /data
+  - docker run -d -p 9000:9000 -e "MINIO_ACCESS_KEY=MINIOACCESSKEY" -e "MINIO_SECRET_KEY=MINIOSECRETKEY" minio/minio server /data
+  - docker run --entrypoint=/bin/sh minio/mc -c "mc config host add minio http://172.17.0.2:9000 MINIOACCESSKEY MINIOSECRETKEY; mc mb minio/books;"
 before_script:
   - psql -c 'create database books_test;' -U postgres
   - psql -c "CREATE USER admin WITH PASSWORD null;" -U postgres
