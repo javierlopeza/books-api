@@ -22,11 +22,11 @@ class AuthorController {
   }
 
   static async update(req, res) {
-    const { theAuthor } = req;
+    const { author } = req.state;
     const alteredAuthor = req.body;
     try {
-      await theAuthor.update(alteredAuthor);
-      const updatedAuthor = await Author.findOne({ where: { id: theAuthor.id } });
+      await author.update(alteredAuthor);
+      const updatedAuthor = await Author.findOne({ where: { id: author.id } });
       responseBuilder.setSuccess(200, 'Author updated', updatedAuthor);
     } catch (error) {
       responseBuilder.setError(400, error);
@@ -35,14 +35,14 @@ class AuthorController {
   }
 
   static async show(req, res) {
-    const { theAuthor } = req;
-    responseBuilder.setSuccess(200, 'Found Author', theAuthor);
+    const { author } = req.state;
+    responseBuilder.setSuccess(200, 'Found Author', author);
     return responseBuilder.send(res);
   }
 
   static async destroy(req, res) {
-    const { theAuthor } = req;
-    await theAuthor.destroy();
+    const { author } = req.state;
+    await author.destroy();
     responseBuilder.setSuccess(200, 'Author deleted');
     return responseBuilder.send(res);
   }

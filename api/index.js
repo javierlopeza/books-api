@@ -18,6 +18,12 @@ app.use(cookieSession({
   maxAge: 14 * 24 * 60 * 60 * 1000, // 2 weeks
 }));
 
+// state
+app.use((req, res, next) => {
+  req.state = {};
+  return next();
+});
+
 // routing
 app.use('/api/v1', routes);
 app.get('*', (req, res) => res.status(200).send({

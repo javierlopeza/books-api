@@ -13,12 +13,12 @@ router.param('id', async (req, res, next, id) => {
   }
 
   try {
-    const theBook = await Book.findOne({ where: { id: Number(id) } });
-    if (!theBook) {
+    const book = await Book.findOne({ where: { id: Number(id) } });
+    if (!book) {
       responseBuilder.setError(404, `Cannot find book with the id ${id}`);
       return responseBuilder.send(res);
     }
-    req.theBook = theBook;
+    req.state.book = book;
     return next();
   } catch (error) {
     responseBuilder.setError(404, error);

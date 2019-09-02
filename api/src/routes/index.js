@@ -8,7 +8,7 @@ import { User } from '../models';
 const router = Router();
 
 router.use(async (req, res, next) => {
-  req.currentUser = req.session.userId && await User.findByPk(req.session.userId);
+  req.state.currentUser = req.session.userId && await User.findByPk(req.session.userId);
   return next();
 });
 

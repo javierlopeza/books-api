@@ -13,12 +13,12 @@ router.param('id', async (req, res, next, id) => {
   }
 
   try {
-    const theAuthor = await Author.findOne({ where: { id: Number(id) } });
-    if (!theAuthor) {
+    const author = await Author.findOne({ where: { id: Number(id) } });
+    if (!author) {
       responseBuilder.setError(404, `Cannot find author with the id ${id}`);
       return responseBuilder.send(res);
     }
-    req.theAuthor = theAuthor;
+    req.state.author = author;
     return next();
   } catch (error) {
     responseBuilder.setError(404, error);

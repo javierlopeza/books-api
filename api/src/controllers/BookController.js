@@ -22,11 +22,11 @@ class BookController {
   }
 
   static async update(req, res) {
-    const { theBook } = req;
+    const { book } = req.state;
     const alteredBook = req.body;
     try {
-      await theBook.update(alteredBook);
-      const updatedBook = await Book.findByPk(theBook.id);
+      await book.update(alteredBook);
+      const updatedBook = await Book.findByPk(book.id);
       responseBuilder.setSuccess(200, 'Book updated', updatedBook);
     } catch (error) {
       responseBuilder.setError(400, error);
@@ -35,14 +35,14 @@ class BookController {
   }
 
   static async show(req, res) {
-    const { theBook } = req;
-    responseBuilder.setSuccess(200, 'Found Book', theBook);
+    const { book } = req.state;
+    responseBuilder.setSuccess(200, 'Found Book', book);
     return responseBuilder.send(res);
   }
 
   static async destroy(req, res) {
-    const { theBook } = req;
-    await theBook.destroy();
+    const { book } = req.state;
+    await book.destroy();
     responseBuilder.setSuccess(200, 'Book deleted');
     return responseBuilder.send(res);
   }

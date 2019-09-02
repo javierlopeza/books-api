@@ -22,11 +22,11 @@ class UserController {
   }
 
   static async update(req, res) {
-    const { theUser } = req;
+    const { user } = req.state;
     const alteredUser = req.body;
     try {
-      await theUser.update(alteredUser);
-      const updatedUser = await User.findOne({ where: { id: theUser.id } });
+      await user.update(alteredUser);
+      const updatedUser = await User.findOne({ where: { id: user.id } });
       responseBuilder.setSuccess(200, 'User updated', updatedUser);
     } catch (error) {
       responseBuilder.setError(400, error);
@@ -35,14 +35,14 @@ class UserController {
   }
 
   static async show(req, res) {
-    const { theUser } = req;
-    responseBuilder.setSuccess(200, 'Found User', theUser);
+    const { user } = req.state;
+    responseBuilder.setSuccess(200, 'Found User', user);
     return responseBuilder.send(res);
   }
 
   static async destroy(req, res) {
-    const { theUser } = req;
-    await theUser.destroy();
+    const { user } = req.state;
+    await user.destroy();
     responseBuilder.setSuccess(200, 'User deleted');
     return responseBuilder.send(res);
   }
