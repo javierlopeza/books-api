@@ -16,7 +16,7 @@ class BookController {
     try {
       const createdBook = await Book.create(newBook);
       const imageRemotePath = await cloudStorage.uploadFile(
-        req.files.image,
+        req.file,
         { directoryPath: 'books', namePrefix: createdBook.id },
       );
       if (imageRemotePath) {
