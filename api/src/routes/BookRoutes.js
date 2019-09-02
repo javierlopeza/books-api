@@ -1,10 +1,12 @@
 import { Router } from 'express';
+import multer from 'multer';
 import BookController from '../controllers/BookController';
 import ResponseBuilder from '../utils/controllers/ResponseBuilder';
 import { Book } from '../models';
 
 const router = Router();
 const responseBuilder = new ResponseBuilder();
+const upload = multer({ dest: 'temp/' });
 
 router.param('id', async (req, res, next, id) => {
   if (!Number(id)) {
@@ -27,9 +29,10 @@ router.param('id', async (req, res, next, id) => {
 });
 
 router.get('/', BookController.index);
-router.post('/', BookController.create);
+router.post('/', upload.single('image'), BookController.create);
 router.get('/:id', BookController.show);
-router.patch('/:id', BookController.update);
+router.patch('/:id', upload.single('image'), BookController.update);
+router.get('/:id/image', BookController.getImage);
 router.delete('/:id', BookController.destroy);
 
 export default router;

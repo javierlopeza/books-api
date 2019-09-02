@@ -13,6 +13,12 @@ export default class ResponseBuilder {
     this.type = 'success';
   }
 
+  setRedirection(statusCode, redirectUrl) {
+    this.statusCode = statusCode;
+    this.redirectUrl = redirectUrl;
+    this.type = 'redirect';
+  }
+
   setError(statusCode, message) {
     this.statusCode = statusCode;
     this.message = message;
@@ -20,6 +26,10 @@ export default class ResponseBuilder {
   }
 
   send(res) {
+    if (this.type === 'redirect') {
+      return res.status(this.statusCode).redirect(this.redirectUrl);
+    }
+
     const result = {
       status: this.type,
       message: this.message,

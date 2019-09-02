@@ -5,7 +5,9 @@ module.exports = {
     mocha: true
   },
   extends: 'airbnb-base',
-  rules: {},
+  rules: {
+    "no-multi-str": "off",
+  },
   overrides: [
     {
       files: ['*.test.js'],

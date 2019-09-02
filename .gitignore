@@ -98,3 +98,6 @@ build/
 
 # Tests logs
 lcov.info
+
+# Temporary files
+/temp
