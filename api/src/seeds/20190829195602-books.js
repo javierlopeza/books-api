@@ -1,4 +1,4 @@
-const chrono = require('chrono-node');
+const { parseDate } = require('../utils/seeds/Parser');
 const getJSON = require('../utils/seeds/get-json');
 
 const { Author } = require('../models');
@@ -14,7 +14,7 @@ module.exports = {
       const authorId = authorsIds[book.author];
       booksData.push({
         authorId,
-        datePublished: chrono.parseDate(book.datePublished),
+        datePublished: parseDate(book.datePublished),
         description: book.description,
         imageUrl: book.imgUrl,
         title: book.title,
