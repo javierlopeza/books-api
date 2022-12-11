@@ -39,7 +39,7 @@
     "coveralls": "^3.0.6",
     "dotenv": "^8.1.0",
     "dotenv-flow": "^3.1.0",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "faker": "^4.1.0",
     "lodash": "^4.17.15",
     "mocha": "^6.2.0",
